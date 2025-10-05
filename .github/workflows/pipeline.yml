@@ -33,7 +33,7 @@ jobs:
       - name: Check style
         run: cd bloglist-backend && npm run lint
 
-      - name: Build UI
+      - name: Build UIi
         run: cd bloglist-backend && npm run build:ui
 
       - name: Notify Discord on Success
