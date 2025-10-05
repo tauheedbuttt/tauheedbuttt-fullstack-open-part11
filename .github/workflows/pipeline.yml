@@ -30,6 +30,9 @@ jobs:
       - name: Check style
         run: cd bloglist-backend && npm run lint
 
+      - name: Build UI
+        run: cd bloglist-backend && npm run build:ui
+
       - name: Notify Discord on Success
         uses: rjstone/discord-webhook-notify@v2
         if: ${{ success() }}
