@@ -2,6 +2,7 @@ require("dotenv").config(); // load .env
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 const blogRouter = require("./controllers/blog");
 const userRouter = require("./controllers/user");
 const loginRouter = require("./controllers/login");
@@ -28,6 +29,8 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static("dist"));
+app.use(express.static(path.join(__dirname, "dist")));
 app.use(requestLogger);
 
 app.use("/api/blogs", blogRouter);
@@ -39,6 +42,9 @@ if (process.env.NODE_ENV === "test") {
   app.use("/api/testing", testingRouter);
 }
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist/index.html"));
+});
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
