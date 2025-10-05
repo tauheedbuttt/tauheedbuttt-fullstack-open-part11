@@ -43,7 +43,7 @@ jobs:
         run: cd bloglist-backend && npm run build:ui
 
       - name: Test on Backend
-        run: echo ${{env.IS_COMMIT_WITH_SKIP}} ${{env.IS_MAIN_BRANCH}}
+        run: echo ${{env.IS_COMMIT_WITH_SKIP == false}} ${{env.IS_MAIN_BRANCH}}
 
       - name: Create Render deployment
         if: ${{ env.IS_COMMIT_WITH_SKIP == false && env.IS_MAIN_BRANCH }}
