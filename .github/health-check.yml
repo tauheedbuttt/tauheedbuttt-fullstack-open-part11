@@ -1,0 +1,36 @@
+name: Health Check
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://full-stack-open-pokedex-popi.onrender.com/health
+          follow-redirect: false
+          max-attempts: 3
+          retry-delay: 5s
+          retry-all: false
+          cookie: "token=asdf1234"
+          basic-auth: "login:password"
+
+      - name: Notify Discord on Success.
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: info
+          details: Health check passed!
+
+      - name: Notify Discord on Failure.
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: error
+          details: Health check failed!
