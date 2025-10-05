@@ -1,0 +1,50 @@
+name: Deployment Pipeline
+
+env:
+  IS_COMMIT_WITH_SKIP: ${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}
+  IS_MAIN_BRANCH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: CD to backend directory
+        run: cd bloglist-backend
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check style
+        run: npm run lint
+
+      - name: Notify Discord on Success
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: info
+          details: Build passed!
+
+      - name: Notify Discord on Failure
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: error
+          details: Build failed!
