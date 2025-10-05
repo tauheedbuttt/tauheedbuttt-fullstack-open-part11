@@ -5,7 +5,7 @@
   "main": "./api/index.js",
   "scripts": {
     "lint": "eslint .",
-    "start": "cross-env NODE_ENV=production node ./api/index.js",
+    "start": "node ./api/index.js",
     "dev": "cross-env NODE_ENV=development node --watch ./api/index.js",
     "test": "cross-env  NODE_ENV=test node --test --test-concurrency=1",
     "start:test": "cross-env NODE_ENV=test node --watch ./api/index.js",
