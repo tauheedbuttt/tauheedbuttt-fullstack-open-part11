@@ -69,3 +69,35 @@ jobs:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
           severity: error
           details: Build failed!
+
+  tag_release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Bump patch version
+        if: ${{ env.IS_COMMIT_WITH_SKIP != 'true' && env.IS_MAIN_BRANCH == 'true' }}
+        uses: anothrNick/github-tag-action@1.64.0
+        id: tag_version
+        env:
+          TAG_PREFIX: v
+          DEFAULT_BUMP: patch
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Discord
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: info
+          details: Version updated!
+
+      - name: Notify Discord on Failure.
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: error
+          details: Version bump failed!
