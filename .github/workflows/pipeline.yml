@@ -42,11 +42,8 @@ jobs:
       - name: Build UIi
         run: cd bloglist-backend && npm run build:ui
 
-      - name: Test on Backend
-        run: echo ${{env.IS_COMMIT_WITH_SKIP == false}} ${{env.IS_MAIN_BRANCH}}
-
       - name: Create Render deployment
-        if: ${{ env.IS_COMMIT_WITH_SKIP == false && env.IS_MAIN_BRANCH }}
+        if: ${{ env.IS_COMMIT_WITH_SKIP != 'true' && env.IS_MAIN_BRANCH == 'true' }}
         uses: sws2apps/render-deployment@main
         with:
           serviceId: ${{ secrets.RENDER_SERVICE_ID }}
