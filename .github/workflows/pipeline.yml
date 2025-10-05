@@ -24,8 +24,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
+      - name: Install dependencies for backend
         run: cd bloglist-backend && npm install
+
+      - name: Install dependencies for frontend
+        run: cd bloglist-frontend && npm install
 
       - name: Check style
         run: cd bloglist-backend && npm run lint
