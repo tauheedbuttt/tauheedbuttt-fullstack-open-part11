@@ -42,13 +42,8 @@ jobs:
       - name: Build UIi
         run: cd bloglist-backend && npm run build:ui
 
-      - name: Notify Discord on Success
-        uses: rjstone/discord-webhook-notify@v2
-        if: ${{ success() }}
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          severity: info
-          details: Build passed!
+      - name: Test on Backend
+        run: echo ${{env.IS_COMMIT_WITH_SKIP}} ${{env.IS_MAIN_BRANCH}}
 
       - name: Create Render deployment
         if: ${{ env.IS_COMMIT_WITH_SKIP == false && env.IS_MAIN_BRANCH }}
@@ -58,6 +53,14 @@ jobs:
           apiKey: ${{ secrets.RENDER_API_KEY }}
           node-version: lts/Jod #optional
           cli-version: 2.2.0 #optional
+
+      - name: Notify Discord on Success
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          severity: info
+          details: Build passed!
 
       - name: Notify Discord on Failure
         uses: rjstone/discord-webhook-notify@v2
